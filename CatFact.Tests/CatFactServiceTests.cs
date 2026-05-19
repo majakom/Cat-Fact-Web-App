@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Xunit;
 using CatFact.Application.Services;
 using CatFact.Application.Interfaces;
 using CatFact.Domain.Entities;
@@ -18,13 +19,21 @@ public class CatFactServiceTests
         };
 
         var providerMock = new Mock<ICatFactProvider>();
+
         providerMock
             .Setup(x => x.GetFactAsync())
             .ReturnsAsync(expectedFact);
 
         var fileMock = new Mock<IFileStorageService>();
+
         fileMock
             .Setup(x => x.AppendLineAsync(It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
+
+        var repositoryMock = new Mock<ICatFactRepository>();
+
+        repositoryMock
+            .Setup(x => x.AddFactAsync(It.IsAny<CatFactEntity>()))
             .Returns(Task.CompletedTask);
 
         var loggerMock = new Mock<ILogger<CatFactService>>();
@@ -32,15 +41,26 @@ public class CatFactServiceTests
         var service = new CatFactService(
             providerMock.Object,
             fileMock.Object,
+            repositoryMock.Object,
             loggerMock.Object
         );
 
         var result = await service.GenerateFactAsync();
+
         Assert.NotNull(result);
+
         Assert.Equal(expectedFact.Fact, result!.Fact);
         Assert.Equal(expectedFact.Length, result.Length);
 
-        fileMock.Verify(x => x.AppendLineAsync(It.IsAny<string>()), Times.Once);
+        fileMock.Verify(
+            x => x.AppendLineAsync(It.IsAny<string>()),
+            Times.Once
+        );
+
+        repositoryMock.Verify(
+            x => x.AddFactAsync(It.IsAny<CatFactEntity>()),
+            Times.Once
+        );
     }
 
     [Fact]
@@ -52,16 +72,26 @@ public class CatFactServiceTests
             .ReturnsAsync((CatFactEntity?)null);
 
         var fileMock = new Mock<IFileStorageService>();
+        var repositoryMock = new Mock<ICatFactRepository>();
         var loggerMock = new Mock<ILogger<CatFactService>>();
 
         var service = new CatFactService(
             providerMock.Object,
             fileMock.Object,
+            repositoryMock.Object,
             loggerMock.Object
         );
 
         var result = await service.GenerateFactAsync();
+
         Assert.Null(result);
-        fileMock.Verify(x => x.AppendLineAsync(It.IsAny<string>()), Times.Never);
+        fileMock.Verify(
+            x => x.AppendLineAsync(It.IsAny<string>()),
+            Times.Never
+        );
+        repositoryMock.Verify(
+            x => x.AddFactAsync(It.IsAny<CatFactEntity>()),
+            Times.Never
+        );
     }
 }

@@ -23,6 +23,12 @@
                     </button>
                 </form>
 
+                <form asp-controller="CatFact" asp-action="ExportJson" method="post" class="mt-2">
+                    <button class="btn btn-outline-success w-100 rounded-3">
+                        Export All Facts to JSON
+                    </button>
+                </form>
+
                 @if (Model != null)
                 {
                     <hr class="my-4" />
@@ -41,6 +47,7 @@
 
                     </div>
                 }
+                
 
             </div>
         </div>

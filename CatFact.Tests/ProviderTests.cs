@@ -17,12 +17,16 @@ public class ProviderTests
             .ReturnsAsync(new CatFactEntity { Fact = "test", Length = 4 });
 
         var file = new Mock<IFileStorageService>();
+        var repository = new Mock<ICatFactRepository>();
         var logger = new Mock<ILogger<CatFactService>>();
-
-        var service = new CatFactService(provider.Object, file.Object, logger.Object);
+        var service = new CatFactService(
+            provider.Object,
+            file.Object,
+            repository.Object,
+            logger.Object
+        );
 
         await service.GenerateFactAsync();
-
         provider.Verify(x => x.GetFactAsync(), Times.Once);
     }
 }

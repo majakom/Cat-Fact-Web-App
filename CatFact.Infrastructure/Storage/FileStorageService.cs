@@ -6,7 +6,6 @@ namespace CatFact.Infrastructure.Storage;
 public class FileStorageService : IFileStorageService
 {
     private readonly ILogger<FileStorageService> _logger;
-
     private readonly string _filePath = "facts.txt";
 
     public FileStorageService(ILogger<FileStorageService> logger)
@@ -22,7 +21,6 @@ public class FileStorageService : IFileStorageService
                 _filePath,
                 content + Environment.NewLine
             );
-
             _logger.LogInformation("Line appended to file.");
         }
         catch (Exception ex)
