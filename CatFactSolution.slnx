@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="CatFact.Application/CatFact.Application.csproj" />
+  <Project Path="CatFact.Domain/CatFact.Domain.csproj" />
+  <Project Path="CatFact.Infrastructure/CatFact.Infrastructure.csproj" />
+  <Project Path="CatFact.Tests/CatFact.Tests.csproj" />
+  <Project Path="CatFact.Web/CatFact.Web.csproj" />
+</Solution>
